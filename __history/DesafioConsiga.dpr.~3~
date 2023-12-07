@@ -1,0 +1,16 @@
+program DesafioConsiga;
+
+uses
+  Vcl.Forms,
+  uPrincipal in 'uPrincipal.pas' {FrmPrincipal},
+  uPrintPDV in 'uPrintPDV.pas' {FrmPrintPDV};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TFrmPrincipal, FrmPrincipal);
+  Application.CreateForm(TFrmPrintPDV, FrmPrintPDV);
+  Application.Run;
+end.

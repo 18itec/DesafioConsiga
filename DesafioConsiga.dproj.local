@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2023/07/04 16:31:41.000.112,=C:\Users\admin\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/12/06 11:30:39.000.403,=C:\Users\admin\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/12/06 17:56:04.000.982,=C:\Users\admin\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/12/06 17:56:24.000.240,C:\Users\admin\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\xampp\htdocs\portfolio\DesafioConsiga\uPrincipal.dfm</Transaction>
+    <Transaction>2023/12/06 17:56:24.000.240,C:\Users\admin\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\xampp\htdocs\portfolio\DesafioConsiga\uPrincipal.pas</Transaction>
+    <Transaction>2023/12/06 17:56:33.000.355,C:\Users\admin\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\xampp\htdocs\portfolio\DesafioConsiga\DesafioConsiga.dproj</Transaction>
+    <Transaction>2023/12/06 18:32:28.000.728,=C:\xampp\htdocs\portfolio\DesafioConsiga\Unit1.pas</Transaction>
+    <Transaction>2023/12/06 18:33:19.000.770,C:\xampp\htdocs\portfolio\DesafioConsiga\uPrintPDV.dfm=C:\xampp\htdocs\portfolio\DesafioConsiga\Unit1.dfm</Transaction>
+    <Transaction>2023/12/06 18:33:19.000.770,C:\xampp\htdocs\portfolio\DesafioConsiga\uPrintPDV.pas=C:\xampp\htdocs\portfolio\DesafioConsiga\Unit1.pas</Transaction>
+    <Transaction>2023/12/06 18:59:33.000.817,=C:\xampp\htdocs\portfolio\DesafioConsiga\Unit1.pas</Transaction>
+    <Transaction>2023/12/06 19:00:01.000.752,C:\xampp\htdocs\portfolio\DesafioConsiga\Controllers\uControladores.pas=C:\xampp\htdocs\portfolio\DesafioConsiga\Unit1.pas</Transaction>
+  </Transactions>
+</BorlandProject>

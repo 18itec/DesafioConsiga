@@ -1,0 +1,27 @@
+unit uPrintPDV;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+
+type
+  TFrmPrintPDV = class(TForm)
+    Memo1: TMemo;
+    Panel1: TPanel;
+    Button1: TButton;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmPrintPDV: TFrmPrintPDV;
+
+implementation
+
+{$R *.dfm}
+
+end.
