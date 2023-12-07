@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.ExtCtrls, System.UITypes,
   Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.DBCtrls, Datasnap.DBClient, Vcl.Mask;
 
 type
@@ -71,9 +71,11 @@ type
     procedure BtnGravaPedClick(Sender: TObject);
     procedure BtnNavClick(Sender: TObject; Button: TNavigateBtn);
     procedure BtnExcluirClick(Sender: TObject);
-    procedure DBEditVlrUnitExit(Sender: TObject);
     procedure BtnCancPedClick(Sender: TObject);
     procedure BtnEditarClick(Sender: TObject);
+    procedure GridItensDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBEditVlrUnitChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -82,6 +84,7 @@ type
 
 var
   FrmPrincipal: TFrmPrincipal;
+  Nped: Integer;
 
 implementation
 
@@ -91,153 +94,82 @@ uses uPrintPDV, uControladores;
 
 procedure TFrmPrincipal.BtnCancPedClick(Sender: TObject);
 begin
-  CDSItem.First;
-  While not CDSItem.Eof do
-  begin
-    if (CDSItemidped.Value = StrToInt(CDSnped.Value)) then
-      CDSItem.Delete;
-    CDSItem.Next;
-  end;
-  CDS.Delete;
-
   CDS.Close;
   CDS.Open;
   CDSItem.Close;
   CDSItem.Open;
-  TSPedidos.Show;
-  TSItens.Enabled:= false;
+  InitializePed(FrmPrincipal);
 end;
 
 procedure TFrmPrincipal.BtnEditarClick(Sender: TObject);
 begin
   TSItens.Enabled:= True;
-  CDS.Open;
-  CDSItem.Open;
   CDS.Edit;
   TSItens.Show;
-  DBEditNPed.SetFocus;
-  GridItens.Enabled:= False;
+  DBEditCliente.SetFocus;
 end;
 
 procedure TFrmPrincipal.BtnExcluirClick(Sender: TObject);
 begin
-  //CDS.DisableControls;
-  //CDSItem.DisableControls;
-
   if MessageDlg('Confirma a exclusão?', mtWarning, [mbYes, mbNo], 0) = IDYES then
-  begin
-    CDSItem.First;
-    While not CDSItem.Eof do
-    begin
-      if (CDSItemidped.Value = StrToInt(CDSnped.Value)) then
-        CDSItem.Delete;
-      CDSItem.Next;
-    end;
-    CDS.Delete;
-  end;
+    DelPed(CDSnped.AsString);
 end;
 
 procedure TFrmPrincipal.BtnGravaPedClick(Sender: TObject);
-var
-  Res: Double;
 begin
-  Res:=0;
-  CDSItem.First;
-  While not CDSItem.Eof do
-  begin
-    if (CDSItemidped.Value = StrToInt(CDSnped.Value)) then
-      Res:= Res+ CDSItemvlrtotal.Value;
-    CDSItem.Next;
-  end;
-  CDSvalor.AsFloat := Res;
-  CDS.Post;
-  GridItens.Enabled:= True;
-  CDS.Close;
-  CDS.Open;
-  CDSItem.Close;
-  CDSItem.Open;
-  TSPedidos.Show;
-  Application.MessageBox('Pedido salvo com sucesso.','Aviso', MB_OK + MB_ICONINFORMATION);
-  CDSItem.EnableControls;
-  TSItens.Enabled:= false;
+  SavePed;
 end;
 
 procedure TFrmPrincipal.BtnNavClick(Sender: TObject; Button: TNavigateBtn);
 begin
   if ( CDSItem.State in [dsInsert] ) then
-    begin
-      DBEditProduto.Enabled:= True;
-      DBEditQtd.Enabled:= True;
-      DBEditVlrUnit.Enabled:= True;
-      DBEditProduto.SetFocus;
-      CDSItemidped.AsInteger:= StrToInt(DBEditNPed.Text);
-    end;
-
+  begin
+    DBEditProduto.Enabled := True;
+    DBEditQtd.Enabled     := True;
+    DBEditVlrUnit.Enabled := True;
+    CDSItemidped.AsInteger:= StrToInt(DBEditNPed.Text);
+    DBEditProduto.SetFocus;
+  end;
 end;
 
 procedure TFrmPrincipal.BtnNovoClick(Sender: TObject);
 begin
-  TSItens.Enabled:= True;
-  CDS.Open;
-  CDSItem.Open;
-  CDS.Insert;
-  CDSItem.Insert;
-  TSItens.Show;
-  DBEditNPed.SetFocus;
-  GridItens.Enabled:= False;
+  NewPed;
 end;
 
 procedure TFrmPrincipal.BtnSimulaVdaClick(Sender: TObject);
-var
-  PipeLine: String;
-  i:integer;
 begin
-
-  FrmPrintPDV := TFrmPrintPDV.Create(Application);
-  for i:=0 to 190 do
-  PipeLine:= PipeLine + '.';
-
-
-  FrmPrintPDV.MPrint.Lines.Clear;
-  FrmPrintPDV.MPrint.Lines.Add(PipeLine);
-  FrmPrintPDV.MPrint.Lines.Add('Venda :'+CDSnped.Value);
-  FrmPrintPDV.MPrint.Lines.Add('Cliente :'+CDScliente.Value);
-  FrmPrintPDV.MPrint.Lines.Add('Endereço :'+CDSendereco.Value);
-  FrmPrintPDV.MPrint.Lines.Add('Cidade/UF :'+CDScidade.Value+'/'+CDSuf.Value);
-  FrmPrintPDV.MPrint.Lines.Add(PipeLine);
-  FrmPrintPDV.MPrint.Lines.Add('Produto                                                                                                                                                                             Quantidade         Unitário           Total');
-  FrmPrintPDV.MPrint.Lines.Add(PipeLine);
-  //loop dos produtos
-  FrmPrintPDV.MPrint.Lines.Add(PipeLine);
-  FrmPrintPDV.MPrint.Lines.Add('                                                                                                                                                                                                                              Total '+formatfloat('#,##0', CDSvalor.Value));
-  FrmPrintPDV.MPrint.Lines.Add(PipeLine);
-
-  Case RGCondPgto.ItemIndex of
-    0 : FrmPrintPDV.MPrint.Lines.Add('A vista Sem Desconto');
-    1 : FrmPrintPDV.MPrint.Lines.Add('A vista com 5% de Desconto');
-    2 : FrmPrintPDV.MPrint.Lines.Add('A vista com 10% de Desconto');
-    3 : FrmPrintPDV.MPrint.Lines.Add('A vista com '+EdtPercentPerson.Text+'% de Desconto');
-    4 : FrmPrintPDV.MPrint.Lines.Add('Acrescimo de 10%');
-    5 : FrmPrintPDV.MPrint.Lines.Add('Acrescimo de 12%');
-    6 : FrmPrintPDV.MPrint.Lines.Add('Acrescimo de '+EdtPercentPerson.Text+'%');
-  end;
-
-  FrmPrintPDV.MPrint.Lines.Add(PipeLine);
-  FrmPrintPDV.Show;
+  SimularVda;
 end;
 
-
-procedure TFrmPrincipal.DBEditVlrUnitExit(Sender: TObject);
+procedure TFrmPrincipal.DBEditVlrUnitChange(Sender: TObject);
 begin
-  if DBEditVlrUnit.Text <> '' then
-    CDSItemvlrtotal.Value:= StrToFloat(DBEditVlrUnit.Text) *StrToFloat(DBEditQtd.Text);
+    if ( CDSItem.State in [dsInsert] ) then
+    if (Length(DBEditVlrUnit.Text) > 0) then
+    CDSItemvlrtotal.Value:= StrToFloat(DBEditVlrUnit.Text) * StrToFloat(DBEditQtd.Text);
 end;
 
 procedure TFrmPrincipal.FormCreate(Sender: TObject);
 begin
-  RGCondPgto.ItemIndex:=0;
-   InitializePed(FrmPrincipal);
-   EdtPercentPerson.Text:='0';
+  InitializePed(FrmPrincipal);
+end;
+
+procedure TFrmPrincipal.GridItensDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  if not (gdSelected in State) then
+  begin
+    if Odd((Sender as TDBGrid).DataSource.DataSet.RecNo) then
+      (Sender as TDBGrid).Canvas.Brush.Color:= clWhite
+    else
+      (Sender as TDBGrid).Canvas.Brush.Color:= $00F1F2F3;
+
+    (Sender as TDBGrid).Canvas.Font.Color:= clBlack;
+
+    (Sender as TDBGrid).Canvas.FillRect(Rect);
+    (Sender as TDBGrid).Canvas.TextOut(Rect.Left + 2, Rect.Top,
+    Column.Field.DisplayText);
+  end;
 end;
 
 end.

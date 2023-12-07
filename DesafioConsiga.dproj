@@ -101,11 +101,9 @@
         </DelphiCompile>
         <DCCReference Include="uPrincipal.pas">
             <Form>FrmPrincipal</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uPrintPDV.pas">
             <Form>FrmPrintPDV</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Controllers\uControladores.pas"/>
         <BuildConfiguration Include="Release">

@@ -1,6 +1,9 @@
+{.$define FullDebugMode}
+
 program DesafioConsiga;
 
 uses
+  //FastMM4,
   Vcl.Forms,
   uPrincipal in 'uPrincipal.pas' {FrmPrincipal},
   uPrintPDV in 'uPrintPDV.pas' {FrmPrintPDV},
